@@ -1,20 +1,17 @@
-package lk.ijse.aad.greenShadow.entity;
+package lk.ijse.aad.greenShadow.entity.impl;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lk.ijse.aad.greenShadow.entity.SuperEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lk.ijse.aad.greenShadow.entity.Field;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
 @Table(name = "crop")
-public class Crop {
+public class CropEntity implements SuperEntity {
     @Id
     private String cropCode;
     private String commonName;
@@ -23,5 +20,8 @@ public class Crop {
     private String cropImage;
     private String category;
     private String season;
-    private Field field;
+    @ManyToOne
+    @JoinColumn(name = "fieldCode")
+    private FieldEntity field;
+
 }
