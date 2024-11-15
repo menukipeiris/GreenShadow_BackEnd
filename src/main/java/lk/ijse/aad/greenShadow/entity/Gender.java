@@ -1,4 +1,5 @@
 package lk.ijse.aad.greenShadow.entity;
 
-public class Log {
+public enum Gender {
+    MALE,FEMALE
 }
