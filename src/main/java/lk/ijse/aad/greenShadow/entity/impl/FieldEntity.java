@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -24,8 +25,8 @@ public class FieldEntity {
     @Column(columnDefinition = "LONGTEXT")
     private String fieldImage2;
     @OneToMany(mappedBy = "field", cascade = CascadeType.ALL)
-    private List<CropEntity> crops;
+    private List<CropEntity> crops=new ArrayList<>();
     @ManyToMany(mappedBy = "fields")
-    private List<StaffEntity> staff;
+    private List<StaffEntity> staff=new ArrayList<>();
 
 }
