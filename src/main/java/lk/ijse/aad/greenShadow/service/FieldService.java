@@ -1,13 +1,21 @@
 package lk.ijse.aad.greenShadow.service;
 
+import lk.ijse.aad.greenShadow.dto.FieldStatus;
 import lk.ijse.aad.greenShadow.dto.impl.FieldDTO;
+import lk.ijse.aad.greenShadow.dto.impl.StaffDTO;
 
 import java.util.List;
 
 public interface FieldService {
-    void saveField(FieldDTO buildFieldDTO);
+    void saveField(FieldDTO fieldDTO);
 
-    void uploadImages(String fieldCode, FieldDTO buildFieldDTO);
+    List<FieldDTO> getAllFields();
 
-    List<FieldDTO> getAllField();
+    FieldStatus getField(String fieldCode);
+
+    void deleteField(String fieldCode);
+
+    void updateField(String fieldCode,FieldDTO fieldDTO);
+
+    void updateAllocatedStaff(String fieldCode, List<String> staffDTOList);
 }
