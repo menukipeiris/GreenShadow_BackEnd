@@ -18,4 +18,8 @@ public interface FieldService {
     void updateField(String fieldCode,FieldDTO fieldDTO);
 
     void updateAllocatedStaff(String fieldCode, List<String> staffDTOList);
+
+    List<String> getAllFieldNames();
+
+    FieldDTO getFieldByName(String field_name);
 }

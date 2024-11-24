@@ -2,7 +2,6 @@ package lk.ijse.aad.greenShadow.controller;
 
 import lk.ijse.aad.greenShadow.customStatusCode.SelectedErrorStatus;
 import lk.ijse.aad.greenShadow.dto.FieldStatus;
-import lk.ijse.aad.greenShadow.dto.impl.AddFieldDTO;
 import lk.ijse.aad.greenShadow.dto.impl.CropDTO;
 import lk.ijse.aad.greenShadow.dto.impl.FieldDTO;
 import lk.ijse.aad.greenShadow.dto.impl.StaffDTO;
@@ -135,4 +134,9 @@ public class FieldController {
         }
     }
 
+    @GetMapping(value = "getallfieldnames", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<String>> getAllFieldName(){
+        List<String> fieldNames = fieldService.getAllFieldNames();
+        return ResponseEntity.ok(fieldNames);
+    }
 }
