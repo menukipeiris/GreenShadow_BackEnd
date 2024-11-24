@@ -1,6 +1,5 @@
 package lk.ijse.aad.greenShadow.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lk.ijse.aad.greenShadow.customStatusCode.SelectedErrorStatus;
 import lk.ijse.aad.greenShadow.dto.CropStatus;
 import lk.ijse.aad.greenShadow.dto.impl.CropDTO;
@@ -8,6 +7,7 @@ import lk.ijse.aad.greenShadow.dto.impl.FieldDTO;
 import lk.ijse.aad.greenShadow.exception.CropNotFoundException;
 import lk.ijse.aad.greenShadow.exception.DataPersistException;
 import lk.ijse.aad.greenShadow.service.CropService;
+import lk.ijse.aad.greenShadow.service.FieldService;
 import lk.ijse.aad.greenShadow.util.AppUtil;
 import lk.ijse.aad.greenShadow.util.RegexProcess;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,8 @@ import java.util.List;
 public class CropController {
     @Autowired
     private CropService cropService;
+    @Autowired
+    private FieldService fieldService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> saveCrop(@RequestParam ("common_name") String commonName,
@@ -31,13 +33,12 @@ public class CropController {
                                          @RequestPart ("crop_image") MultipartFile cropImage,
                                          @RequestParam ("category") String category,
                                          @RequestParam ("season") String season,
-                                         @RequestParam ("field") String fieldDTO
+                                         @RequestParam ("field_name") String field_name
     ){
         String base64CropImage = "";
 
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            FieldDTO field = objectMapper.readValue(fieldDTO, FieldDTO.class);
+            FieldDTO field = fieldService.getFieldByName(field_name);
             byte[] bytesCropImage = cropImage.getBytes();
             base64CropImage = AppUtil.cropImageToBase64(bytesCropImage);
 
@@ -61,20 +62,19 @@ public class CropController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping(value = "/{cropCode}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public CropStatus getSelectedCrop(@PathVariable ("crop_code") String crop_code){
+        if(!RegexProcess.cropCodeMatcher(crop_code)){
+            return new SelectedErrorStatus(1,"Crop code is invalid");
+        }
+        return cropService.getSelectedCrop(crop_code);
+    }
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<CropDTO> getAllCrops(){
         return cropService.getAllCrops();
     }
-
-    @GetMapping(value = "/{cropCode}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public CropStatus getSelectedCrop(@PathVariable("cropCode") String cropCode){
-        if (!RegexProcess.cropCodeMatcher(cropCode)) {
-            return new SelectedErrorStatus(1,"Crop Code is not valid!");
-        }
-        return cropService.getSelectedCrop(cropCode);
-    }
     @DeleteMapping(value = "/{cropCode}")
-    public ResponseEntity<Void> deleteCrop(@PathVariable ("cropCode") String crop_code){
+    public ResponseEntity<Void> deleteCrop(@PathVariable ("crop_code") String crop_code){
         try {
             if(!RegexProcess.cropCodeMatcher(crop_code)){
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
