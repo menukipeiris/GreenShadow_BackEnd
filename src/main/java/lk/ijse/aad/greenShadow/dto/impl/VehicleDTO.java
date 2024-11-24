@@ -18,5 +18,5 @@ public class VehicleDTO implements VehicleStatus {
     private Fuel fuelType;
     private Status status;
     private String remarks;
-    private StaffEntity assignedStaff;
+    private StaffDTO assignedStaff;
 }
