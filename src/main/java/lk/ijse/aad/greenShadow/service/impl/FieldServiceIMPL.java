@@ -17,6 +17,7 @@ import lk.ijse.aad.greenShadow.util.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -119,5 +120,27 @@ public class FieldServiceIMPL implements FieldService {
             throw new FieldNotFoundException("Field not found: " + field_name);
         }
         return fieldMapping.toFieldDTO(tmpField.get());
+    }
+
+    @Override
+    public List<FieldDTO> getFieldListByName(List<String> field_name) {
+        if(field_name == null || field_name.isEmpty()){
+            return Collections.emptyList();
+        }
+
+        List<FieldEntity> fieldEntities = fieldDao.findByFieldNameList(field_name);
+
+        if(fieldEntities.isEmpty()){
+            throw new FieldNotFoundException("Field not found");
+        }
+
+        return fieldEntities.stream()
+                .map(fieldMapping::toFieldDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<FieldEntity> findByFieldName(String fieldName) {
+        return Optional.empty();
     }
 }

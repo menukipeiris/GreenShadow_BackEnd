@@ -108,6 +108,12 @@ public class CropServiceIMPL implements CropService {
                 .map(cropMapping::toCropDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Optional<CropEntity> findByCommonName(String commonName) {
+        return cropDao.findByCropName(commonName);
+
+    }
 }
 
 

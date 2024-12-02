@@ -5,6 +5,7 @@ import lk.ijse.aad.greenShadow.dto.FieldStatus;
 import lk.ijse.aad.greenShadow.dto.impl.CropDTO;
 import lk.ijse.aad.greenShadow.dto.impl.FieldDTO;
 import lk.ijse.aad.greenShadow.dto.impl.StaffDTO;
+import lk.ijse.aad.greenShadow.entity.impl.FieldEntity;
 import lk.ijse.aad.greenShadow.exception.DataPersistException;
 import lk.ijse.aad.greenShadow.exception.FieldNotFoundException;
 import lk.ijse.aad.greenShadow.service.FieldService;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/fields")
@@ -138,5 +140,19 @@ public class FieldController {
     public ResponseEntity<List<String>> getAllFieldName(){
         List<String> fieldNames = fieldService.getAllFieldNames();
         return ResponseEntity.ok(fieldNames);
+    }
+
+    @GetMapping(value = "/getfieldcode/{fieldName}")
+    public ResponseEntity<String> getFieldCode(@PathVariable("fieldName") String fieldName) {
+        try {
+            Optional<FieldEntity> fieldEntity = fieldService.findByFieldName(fieldName);
+            return ResponseEntity.ok(fieldEntity.get().getFieldCode());
+        }catch (FieldNotFoundException e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
