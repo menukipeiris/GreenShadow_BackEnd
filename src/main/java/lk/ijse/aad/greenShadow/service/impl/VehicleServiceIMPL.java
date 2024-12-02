@@ -75,4 +75,10 @@ public class VehicleServiceIMPL implements VehicleService {
             tmpVehicle.get().setAssignedStaff(staffEntity);
         }
     }
+
+    @Override
+    public Optional<VehicleEntity> findByLicenseNumber(String licenseNumber) {
+        return vehicleDao.findByLicenseNumber(licenseNumber);
+
+    }
 }
