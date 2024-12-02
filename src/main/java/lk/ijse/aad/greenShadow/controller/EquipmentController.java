@@ -3,6 +3,7 @@ package lk.ijse.aad.greenShadow.controller;
 import lk.ijse.aad.greenShadow.customStatusCode.SelectedErrorStatus;
 import lk.ijse.aad.greenShadow.dto.EquipmentStatus;
 import lk.ijse.aad.greenShadow.dto.impl.EquipmentDTO;
+import lk.ijse.aad.greenShadow.entity.impl.EquipmentEntity;
 import lk.ijse.aad.greenShadow.exception.DataPersistException;
 import lk.ijse.aad.greenShadow.exception.EquipmentNotFoundException;
 import lk.ijse.aad.greenShadow.service.EquipmentService;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/equipment")
@@ -73,6 +75,20 @@ public class EquipmentController {
             }
             equipmentService.updateEquipment(equipmentId, equipmentDTO);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }catch (EquipmentNotFoundException e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(value = "/getequipId/{equipmentName}")
+    public ResponseEntity<String> getEquipId(@PathVariable("equipmentName") String equipmentName) {
+        try {
+            Optional<EquipmentEntity> equipmentEntity = equipmentService.findByEquipName(equipmentName);
+            return ResponseEntity.ok(equipmentEntity.get().getEquipmentId());
         }catch (EquipmentNotFoundException e){
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

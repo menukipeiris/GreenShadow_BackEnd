@@ -76,4 +76,10 @@ public class EquipmentServiceIMPL implements EquipmentService {
             tmpEquipment.get().setAssignedField(fieldEntity);
         }
     }
+
+    @Override
+    public Optional<EquipmentEntity> findByEquipName(String equipmentName) {
+        return equipmentDao.findByEquipmentName(equipmentName);
+
+    }
 }
