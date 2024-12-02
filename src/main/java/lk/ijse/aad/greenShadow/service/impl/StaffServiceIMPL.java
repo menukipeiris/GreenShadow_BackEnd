@@ -15,8 +15,10 @@ import lk.ijse.aad.greenShadow.util.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -43,15 +45,15 @@ public class StaffServiceIMPL implements StaffService {
         return staffMapping.toStaffDTOList(staffDao.findAll());
     }
 
-    @Override
-    public StaffStatus getStaff(String id) {
-        if(staffDao.existsById(id)){
-            var selectedStaff = staffDao.getReferenceById(id);
-            return staffMapping.toStaffDTO(selectedStaff);
-        }else {
-            return new SelectedErrorStatus(2,"Selected Staff Member Not Found");
-        }
-    }
+//    @Override
+//    public StaffStatus getStaff(String id) {
+//        if(staffDao.existsById(id)){
+//            var selectedStaff = staffDao.getReferenceById(id);
+//            return staffMapping.toStaffDTO(selectedStaff);
+//        }else {
+//            return new SelectedErrorStatus(2,"Selected Staff Member Not Found");
+//        }
+//    }
 
     @Override
     public void deleteStaff(String id) {
@@ -84,5 +86,44 @@ public class StaffServiceIMPL implements StaffService {
             List<VehicleEntity> vehicleEntityList = staffMapping.toVehicleEntityList(staffDTO.getVehicles());
             tmpStaff.get().setVehicles(vehicleEntityList);
         }
+    }
+
+    @Override
+    public List<String> getAllStaffNames() {
+        List<StaffEntity> staffEntities = staffDao.findAll();
+        return staffEntities.stream()
+                .map(StaffEntity::getFirstName)
+                .collect(Collectors.toList());    }
+
+    @Override
+    public List<StaffDTO> getStaffListByName(List<String> staffs) {
+        if(staffs.isEmpty() || staffs == null){
+            return Collections.emptyList();
+        }
+
+        List<StaffEntity> staffEntities = staffDao.findByStaffNameList(staffs);
+
+        if(staffEntities.isEmpty()){
+            throw new StaffNotFoundException("Staff Member Not Found");
+        }
+
+        return staffEntities.stream()
+                .map(staffMapping::toStaffDTO)
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public StaffDTO getStaffByName(String assignedStaff) {
+        Optional<StaffEntity> tmpStaff = staffDao.findByStaffName(assignedStaff);
+        if(!tmpStaff.isPresent()){
+            throw new StaffNotFoundException("Staff Member Not Found");
+        }
+        return staffMapping.toStaffDTO(tmpStaff.get());
+    }
+
+    @Override
+    public Optional<StaffEntity> findByFirstName(String firstName) {
+        return staffDao.findByStaffName(firstName);
     }
 }

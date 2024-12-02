@@ -3,6 +3,7 @@ package lk.ijse.aad.greenShadow.controller;
 import lk.ijse.aad.greenShadow.customStatusCode.SelectedErrorStatus;
 import lk.ijse.aad.greenShadow.dto.StaffStatus;
 import lk.ijse.aad.greenShadow.dto.impl.StaffDTO;
+import lk.ijse.aad.greenShadow.entity.impl.StaffEntity;
 import lk.ijse.aad.greenShadow.exception.DataPersistException;
 import lk.ijse.aad.greenShadow.exception.StaffNotFoundException;
 import lk.ijse.aad.greenShadow.service.StaffService;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/staff")
@@ -34,13 +36,13 @@ public class StaffController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping(value="/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public StaffStatus getSelectedStaff(@PathVariable ("id") String id){
-        if(!RegexProcess.staffIdMatcher(id)){
-            return new SelectedErrorStatus(1,"Staff ID does not match");
-        }
-        return staffService.getStaff(id);
-    }
+//    @GetMapping(value="/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+//    public StaffStatus getSelectedStaff(@PathVariable ("id") String id){
+//        if(!RegexProcess.staffIdMatcher(id)){
+//            return new SelectedErrorStatus(1,"Staff ID does not match");
+//        }
+//        return staffService.getStaff(id);
+//    }
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<StaffDTO> getAllStaff(){
         return staffService.getAllStaff();
@@ -71,6 +73,24 @@ public class StaffController {
             }
             staffService.updateStaff(id, staffDTO);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }catch (StaffNotFoundException e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping(value = "getallstaffnames",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<String>> getAllStaffName(){
+        List<String> staffNames = staffService.getAllStaffNames();
+        return ResponseEntity.ok(staffNames);
+    }
+    @GetMapping(value = "/getstaffid/{firstName}")
+    public ResponseEntity<String> getStaffId(@PathVariable("firstName") String firstName){
+        try {
+            Optional<StaffEntity> staffEntity = staffService.findByFirstName(firstName);
+            return ResponseEntity.ok(staffEntity.get().getStaffId());
         }catch (StaffNotFoundException e){
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
