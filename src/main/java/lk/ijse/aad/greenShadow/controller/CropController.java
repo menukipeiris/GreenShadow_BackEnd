@@ -108,5 +108,47 @@ public class CropController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PatchMapping(value = "/{commonName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> updateCrop(@PathVariable @RequestParam ("common_name") String commonName,
+                                           @RequestParam ("scientific_name") String scientificName,
+                                           @RequestPart ("crop_image") MultipartFile cropImage,
+                                           @RequestParam ("category") String category,
+                                           @RequestParam ("season") String season,
+                                           @RequestParam ("field_name") String field_name
+    ){
+        String base64CropImage = "";
+
+        try {
+            FieldDTO field = fieldService.getFieldByName(field_name);
+            byte[] bytesCropImage = cropImage.getBytes();
+            base64CropImage = AppUtil.cropImageToBase64(bytesCropImage);
+
+            String crop_code = AppUtil.generateCropId();
+
+            CropDTO buildCropDTO = new CropDTO();
+            buildCropDTO.setCropCode(crop_code);
+            buildCropDTO.setCommonName(commonName);
+            buildCropDTO.setScientificName(scientificName);
+            buildCropDTO.setCropImage(base64CropImage);
+            buildCropDTO.setCategory(category);
+            buildCropDTO.setSeason(season);
+            buildCropDTO.setField(field);
+            cropService.updateCrop(commonName,buildCropDTO);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (DataPersistException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+    @GetMapping(value = "getallcropnames",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<String>> getAllCropName(){
+        List<String> cropNames = cropService.getAllCropNames();
+        return ResponseEntity.ok(cropNames);
+    }
 
 }

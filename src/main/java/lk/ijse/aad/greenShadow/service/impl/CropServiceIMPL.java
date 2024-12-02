@@ -17,8 +17,10 @@ import lk.ijse.aad.greenShadow.util.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.yaml.snakeyaml.nodes.NodeId.mapping;
 
@@ -83,4 +85,29 @@ public class CropServiceIMPL implements CropService {
             tmpCrop.get().setField(fieldEntity);
         }
     }
+
+    @Override
+    public List<String> getAllCropNames() {
+        List<CropEntity> cropEntities = cropDao.findAll();
+        return cropEntities.stream()
+                .map(CropEntity::getCommonName)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CropDTO> getCropListByNames(List<String> crops) {
+        if(crops.isEmpty() || crops == null) {
+            return Collections.emptyList();
+        }
+        List<CropEntity> cropEntities = cropDao.findByCropNameList(crops);
+
+        if(cropEntities.isEmpty()) {
+            throw new CropNotFoundException("Crop not found");
+        }
+        return cropEntities.stream()
+                .map(cropMapping::toCropDTO)
+                .collect(Collectors.toList());
+    }
 }
+
+
