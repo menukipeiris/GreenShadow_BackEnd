@@ -19,10 +19,7 @@ public class MonitoringLogDTO implements MonitoringLogStatus {
     private String logDate;
     private String logDetails;
     private String observedImage;
-    @JsonManagedReference
     private List<FieldDTO> fields;
-    @JsonManagedReference
     private List<CropDTO> crops;
-    @JsonManagedReference
     private List<StaffDTO> staff;
 }

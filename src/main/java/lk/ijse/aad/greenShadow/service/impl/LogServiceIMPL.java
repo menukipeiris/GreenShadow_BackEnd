@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -40,8 +41,16 @@ public class LogServiceIMPL implements LogService {
 
     @Override
     public List<MonitoringLogDTO> getAllLogs() {
-        return mapping.toMonitoringLogDTOList(monitoringLogDao.findAll());
-    }
+        List<MonitoringLogEntity> logs = monitoringLogDao.findAll();
+        return logs.stream()
+                .map(log -> {
+                    MonitoringLogDTO monitoringLogDTO = new MonitoringLogDTO();
+                    monitoringLogDTO.setLogDate(log.getLogDate());
+                    monitoringLogDTO.setLogDetails(log.getLogDetails());
+                    monitoringLogDTO.setObservedImage(log.getObservedImage());
+                    return monitoringLogDTO;
+                })
+                .collect(Collectors.toList());    }
 
     @Override
     public MonitoringLogStatus getLog(String logCode) {

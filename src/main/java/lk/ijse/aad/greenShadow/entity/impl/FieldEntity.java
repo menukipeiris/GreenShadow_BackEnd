@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "field")
+@ToString(exclude = {"crops", "allocated_staff"})
+
 public class FieldEntity {
     @Id
     private String fieldCode;
