@@ -44,4 +44,10 @@ public class RegexProcess {
         Pattern regexPattern = Pattern.compile(regexForVehicleCode);
         return regexPattern.matcher(vehicleCode).matches();
     }
+
+    public static boolean vehicleLicenseMatcher(String licenseNumber) {
+        String regexForVehicleNumber = "^[xXyYzZ]-?\\d{4}$";
+        Pattern regexPattern = Pattern.compile(regexForVehicleNumber);
+        return regexPattern.matcher(licenseNumber).matches();
+    }
 }
