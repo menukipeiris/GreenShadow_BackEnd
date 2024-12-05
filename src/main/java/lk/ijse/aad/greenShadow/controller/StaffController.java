@@ -1,11 +1,11 @@
 package lk.ijse.aad.greenShadow.controller;
 
-import lk.ijse.aad.greenShadow.customStatusCode.SelectedErrorStatus;
-import lk.ijse.aad.greenShadow.dto.StaffStatus;
+import lk.ijse.aad.greenShadow.dto.impl.FieldDTO;
 import lk.ijse.aad.greenShadow.dto.impl.StaffDTO;
 import lk.ijse.aad.greenShadow.entity.impl.StaffEntity;
 import lk.ijse.aad.greenShadow.exception.DataPersistException;
 import lk.ijse.aad.greenShadow.exception.StaffNotFoundException;
+import lk.ijse.aad.greenShadow.service.FieldService;
 import lk.ijse.aad.greenShadow.service.StaffService;
 import lk.ijse.aad.greenShadow.util.RegexProcess;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +16,26 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/staff")
+@CrossOrigin
 public class StaffController {
     @Autowired
     private StaffService staffService;
+    @Autowired
+    private FieldService fieldService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> saveStaff(@RequestBody StaffDTO staffDTO) {
         try {
+            List<String> field_name = staffDTO.getFields()
+                    .stream()
+                    .map(FieldDTO::getFieldName)
+                    .collect(Collectors.toList());
+            List<FieldDTO> fields = fieldService.getFieldListByName(field_name);
+            staffDTO.setFields(fields);
             staffService.saveStaff(staffDTO);
             return new ResponseEntity<>(HttpStatus.CREATED);
         }catch (DataPersistException e){
@@ -36,13 +46,6 @@ public class StaffController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-//    @GetMapping(value="/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
-//    public StaffStatus getSelectedStaff(@PathVariable ("id") String id){
-//        if(!RegexProcess.staffIdMatcher(id)){
-//            return new SelectedErrorStatus(1,"Staff ID does not match");
-//        }
-//        return staffService.getStaff(id);
-//    }
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<StaffDTO> getAllStaff(){
         return staffService.getAllStaff();
@@ -63,15 +66,22 @@ public class StaffController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<Void> updateStaff(@PathVariable ("id") String id,
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PatchMapping(value = "/{staffId}")
+    public ResponseEntity<Void> updateStaff(@PathVariable ("staffId") String staffId,
                                             @RequestBody StaffDTO staffDTO){
 
         try {
-            if(!RegexProcess.staffIdMatcher(id) || staffDTO == null){
+            if(!RegexProcess.staffIdMatcher(staffId) || staffDTO == null){
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
-            staffService.updateStaff(id, staffDTO);
+            List<String> field_name = staffDTO.getFields()
+                    .stream()
+                    .map(FieldDTO::getFieldName)
+                    .collect(Collectors.toList());
+            List<FieldDTO> fields = fieldService.getFieldListByName(field_name);
+            staffDTO.setFields(fields);
+            staffService.updateStaff(staffId, staffDTO);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }catch (StaffNotFoundException e){
             e.printStackTrace();
@@ -86,7 +96,7 @@ public class StaffController {
         List<String> staffNames = staffService.getAllStaffNames();
         return ResponseEntity.ok(staffNames);
     }
-    @GetMapping(value = "/getstaffid/{firstName}")
+    @GetMapping( "/getstaffid/{firstName}")
     public ResponseEntity<String> getStaffId(@PathVariable("firstName") String firstName){
         try {
             Optional<StaffEntity> staffEntity = staffService.findByFirstName(firstName);

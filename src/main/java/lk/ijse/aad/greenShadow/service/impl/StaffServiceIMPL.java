@@ -2,8 +2,10 @@ package lk.ijse.aad.greenShadow.service.impl;
 
 import jakarta.transaction.Transactional;
 import lk.ijse.aad.greenShadow.customStatusCode.SelectedErrorStatus;
+import lk.ijse.aad.greenShadow.dao.FieldDAO;
 import lk.ijse.aad.greenShadow.dao.StaffDAO;
 import lk.ijse.aad.greenShadow.dto.StaffStatus;
+import lk.ijse.aad.greenShadow.dto.impl.FieldDTO;
 import lk.ijse.aad.greenShadow.dto.impl.StaffDTO;
 import lk.ijse.aad.greenShadow.entity.impl.FieldEntity;
 import lk.ijse.aad.greenShadow.entity.impl.StaffEntity;
@@ -15,6 +17,7 @@ import lk.ijse.aad.greenShadow.util.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +32,8 @@ public class StaffServiceIMPL implements StaffService {
     private Mapping staffMapping;
     @Autowired
     private StaffDAO staffDao;
+    @Autowired
+    private FieldDAO fieldDao;
 
 
     @Override
@@ -42,8 +47,31 @@ public class StaffServiceIMPL implements StaffService {
 
     @Override
     public List<StaffDTO> getAllStaff() {
-        return staffMapping.toStaffDTOList(staffDao.findAll());
-    }
+        List<StaffEntity> staffs = staffDao.findAll();
+        return staffs.stream()
+                .map(staff -> {
+                    StaffDTO staffDTO = new StaffDTO();
+                    staffDTO.setFirstName(staff.getFirstName());
+                    staffDTO.setLastName(staff.getLastName());
+                    staffDTO.setDesignation(staff.getDesignation());
+                    staffDTO.setGender(staff.getGender());
+                    staffDTO.setJoinedDate(staff.getJoinedDate());
+                    staffDTO.setDob(staff.getDob());
+                    staffDTO.setAddress(staff.getAddress());
+                    staffDTO.setContactNo(staff.getContactNo());
+                    staffDTO.setEmail(staff.getEmail());
+                    staffDTO.setRole(staff.getRole());
+                    List<FieldDTO> assignedFieldDTO = new ArrayList<>();
+                    for (FieldEntity field : staff.getFields()) {
+                        Optional<FieldEntity> fieldOpt = fieldDao.findById(field.getFieldName());
+                        if (fieldOpt.isPresent()) {
+                            assignedFieldDTO.add(staffMapping.toFieldDTO(fieldOpt.get()));
+                        }
+                    }
+                    staffDTO.setFields(assignedFieldDTO);
+                    return staffDTO;
+                })
+                .collect(Collectors.toList());    }
 
 //    @Override
 //    public StaffStatus getStaff(String id) {
@@ -58,7 +86,7 @@ public class StaffServiceIMPL implements StaffService {
     @Override
     public void deleteStaff(String id) {
         Optional<StaffEntity> foundStaff = staffDao.findById(id);
-        if(foundStaff.isPresent()) {
+        if(!foundStaff.isPresent()) {
             throw new StaffNotFoundException("Staff Member Not Found");
         }else {
             staffDao.deleteById(id);
@@ -81,10 +109,6 @@ public class StaffServiceIMPL implements StaffService {
             tmpStaff.get().setContactNo(staffDTO.getContactNo());
             tmpStaff.get().setEmail(staffDTO.getEmail());
             tmpStaff.get().setRole(staffDTO.getRole());
-            List<FieldEntity> fieldEntityList = staffMapping.toFieldEntityList(staffDTO.getFields());
-            tmpStaff.get().setFields(fieldEntityList);
-            List<VehicleEntity> vehicleEntityList = staffMapping.toVehicleEntityList(staffDTO.getVehicles());
-            tmpStaff.get().setVehicles(vehicleEntityList);
         }
     }
 
