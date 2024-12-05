@@ -65,7 +65,7 @@ public class LogServiceIMPL implements LogService {
     @Override
     public void deleteLog(String logCode) {
         Optional<MonitoringLogEntity> foundLog = monitoringLogDao.findById(logCode);
-        if (foundLog.isPresent()) {
+        if (!foundLog.isPresent()) {
             throw new LogNotFoundException("Log not found");
         } else {
             monitoringLogDao.deleteById(logCode);
@@ -88,5 +88,10 @@ public class LogServiceIMPL implements LogService {
             List<StaffEntity> staffEntityList = mapping.toStaffEntityList(monitoringLogDTO.getStaff());
             tmpLog.get().setStaff(staffEntityList);
         }
+    }
+
+    @Override
+    public Optional<MonitoringLogEntity> findByLogDesc(String logDesc) {
+        return monitoringLogDao.findByLogDesc(logDesc);
     }
 }
