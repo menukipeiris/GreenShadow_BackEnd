@@ -43,8 +43,17 @@ public class FieldServiceIMPL implements FieldService {
 
     @Override
     public List<FieldDTO> getAllFields() {
-        return fieldMapping.toFieldDTOList(fieldDao.findAll());
-    }
+        List<FieldEntity> fields = fieldDao.findAll();
+        return fields.stream()
+                .map(field -> {
+                    FieldDTO fieldDTO = new FieldDTO();
+                    fieldDTO.setFieldImage1(field.getFieldImage1());
+                    fieldDTO.setFieldName(field.getFieldName());
+                    fieldDTO.setExtentSize(field.getExtentSize());
+                    fieldDTO.setLocation(field.getLocation());
+                    return fieldDTO;
+                })
+                .collect(Collectors.toList());    }
 
     @Override
     public FieldStatus getField(String fieldCode) {
@@ -59,7 +68,7 @@ public class FieldServiceIMPL implements FieldService {
     @Override
     public void deleteField(String fieldCode) {
         Optional<FieldEntity> foundField = fieldDao.findById(fieldCode);
-        if(foundField.isPresent()){
+        if(!foundField.isPresent()){
             throw new FieldNotFoundException("Field not found");
         }else {
             fieldDao.deleteById(fieldCode);
@@ -77,10 +86,6 @@ public class FieldServiceIMPL implements FieldService {
             tmpField.get().setExtentSize(fieldDTO.getExtentSize());
             tmpField.get().setFieldImage1(fieldDTO.getFieldImage1());
             tmpField.get().setFieldImage2(fieldDTO.getFieldImage2());
-            List<CropEntity> cropEntityList = fieldMapping.toCropEntityList(fieldDTO.getCrops());
-            tmpField.get().setCrops(cropEntityList);
-            List<StaffEntity> staffEntityList = fieldMapping.toStaffEntityList(fieldDTO.getAllocated_staff());
-            tmpField.get().setStaff(staffEntityList);
         }
     }
 
