@@ -6,6 +6,7 @@ import lk.ijse.aad.greenShadow.dao.CropDAO;
 import lk.ijse.aad.greenShadow.dao.FieldDAO;
 import lk.ijse.aad.greenShadow.dto.CropStatus;
 import lk.ijse.aad.greenShadow.dto.impl.CropDTO;
+import lk.ijse.aad.greenShadow.dto.impl.FieldDTO;
 import lk.ijse.aad.greenShadow.entity.impl.CropEntity;
 import lk.ijse.aad.greenShadow.entity.impl.FieldEntity;
 import lk.ijse.aad.greenShadow.exception.CropNotFoundException;
@@ -46,8 +47,23 @@ public class CropServiceIMPL implements CropService {
 
     @Override
     public List<CropDTO> getAllCrops() {
-        return cropMapping.asCropDTOList(cropDao.findAll());
-
+        List<CropEntity> crops = cropDao.findAll();
+        return crops.stream()
+                .map(crop -> {
+                    CropDTO cropDTO = new CropDTO();
+                    cropDTO.setCropImage(crop.getCropImage());
+                    cropDTO.setCommonName(crop.getCommonName());
+                    cropDTO.setScientificName(crop.getScientificName());
+                    cropDTO.setCategory(crop.getCategory());
+                    cropDTO.setSeason(crop.getSeason());
+                    Optional<FieldEntity> assignedField = fieldDao.
+                            findById(crop.getField().getFieldCode());
+                    FieldDTO assignedFieldDTO = assignedField.isPresent() ?
+                            cropMapping.toFieldDTO(assignedField.get()) : null;
+                    cropDTO.setField(assignedFieldDTO);
+                    return cropDTO;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -63,7 +79,7 @@ public class CropServiceIMPL implements CropService {
     @Override
     public void deleteCrop(String cropCode) {
         Optional<CropEntity> foundCrop = cropDao.findById(cropCode);
-        if(foundCrop.isPresent()) {
+        if(!foundCrop.isPresent()) {
             throw new CropNotFoundException("Crop not found");
         }else {
             cropDao.deleteById(cropCode);
@@ -95,7 +111,7 @@ public class CropServiceIMPL implements CropService {
     }
 
     @Override
-    public List<CropDTO> getCropListByNames(List<String> crops) {
+    public List<CropDTO> getCropListByName(List<String> crops) {
         if(crops.isEmpty() || crops == null) {
             return Collections.emptyList();
         }
@@ -106,8 +122,8 @@ public class CropServiceIMPL implements CropService {
         }
         return cropEntities.stream()
                 .map(cropMapping::toCropDTO)
-                .collect(Collectors.toList());
-    }
+                .collect(Collectors.toList());    }
+
 
     @Override
     public Optional<CropEntity> findByCommonName(String commonName) {

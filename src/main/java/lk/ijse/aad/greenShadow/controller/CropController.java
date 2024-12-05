@@ -23,6 +23,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/crop")
+@CrossOrigin
 public class CropController {
     @Autowired
     private CropService cropService;
@@ -91,24 +92,6 @@ public class CropController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-    }
-    @PutMapping(value = "/{cropCode}")
-    public ResponseEntity<Void> updateCrop(@PathVariable ("cropCode") String cropCode,
-                                           @RequestBody CropDTO cropDTO){
-
-        try {
-            if(!RegexProcess.cropCodeMatcher(cropCode) || cropDTO ==null){
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-            cropService.updateCrop(cropCode, cropDTO);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }catch (CropNotFoundException e){
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping(value = "/{commonName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

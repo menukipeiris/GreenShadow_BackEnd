@@ -20,7 +20,7 @@ public interface CropService {
 
     List<String> getAllCropNames();
 
-    List<CropDTO> getCropListByNames(List<String> crops);
+    List<CropDTO> getCropListByName(List<String> crops);
 
     Optional<CropEntity> findByCommonName(String commonName);
 
