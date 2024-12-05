@@ -33,6 +33,8 @@ public class VehicleController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> saveVehicle(@RequestBody VehicleDTO vehicleDTO) {
         try {
+            StaffDTO staff = staffService.getStaffByName(vehicleDTO.getAssignedStaff().getFirstName());
+            vehicleDTO.setAssignedStaff(staff);
             vehicleService.saveVehicle(vehicleDTO);
             return new ResponseEntity<>(HttpStatus.CREATED);
         }catch (DataPersistException e){
@@ -43,17 +45,11 @@ public class VehicleController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping(value = "/{vehicleCode}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public VehicleStatus getSelectedVehicle(@PathVariable ("vehicleCode") String vehicleCode) {
-        if(!RegexProcess.vehicleCodeMatcher(vehicleCode)){
-            return new SelectedErrorStatus(1,"Vehicle code does not match");
-        }
-        return vehicleService.getVehicle(vehicleCode);
-    }
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<VehicleDTO> getAllVehicles() {
         return vehicleService.getAllVehicles();
     }
+
     @DeleteMapping(value = "/{vehicleCode}")
     public ResponseEntity<Void> deleteVehicle(@PathVariable("vehicleCode") String vehicleCode) {
         try {
@@ -70,7 +66,9 @@ public class VehicleController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PutMapping(value = "/{vehicleCode}")
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PatchMapping(value = "/{vehicleCode}")
     public ResponseEntity<Void> updateVehicle(@PathVariable ("vehicleCode") String vehicleCode,
                                               @RequestBody VehicleDTO vehicleDTO) {
 
@@ -90,7 +88,7 @@ public class VehicleController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping(value = "/getvehiclecode/{licenseNumber}")
+    @GetMapping("/getvehiclecode/{licenseNumber}")
     public ResponseEntity<String> getVehicleCode(@PathVariable("licenseNumber") String licenseNumber) {
         try {
             Optional<VehicleEntity> vehicleEntity = vehicleService.findByLicenseNumber(licenseNumber);
@@ -103,4 +101,5 @@ public class VehicleController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }
