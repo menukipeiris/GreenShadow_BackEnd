@@ -17,14 +17,31 @@ public class Mapping {
     private ModelMapper modelMapper;
 
     //for crop mapping
-    public CropEntity toCropEntity(CropDTO cropDTO) {return modelMapper.map(cropDTO,CropEntity.class);}
-    public CropDTO toCropDTO(CropEntity cropEntity) {return  modelMapper.map(cropEntity,CropDTO.class);}
-    public List<CropDTO> asCropDTOList(List<CropEntity> cropEntityList) {
-        return modelMapper.map(cropEntityList, new TypeToken<List<CropDTO>>() {
-        }.getType());
+    public CropEntity toCropEntity(CropDTO cropDTO) {
+        return modelMapper.map(cropDTO, CropEntity.class);
     }
-        public List<CropEntity> toCropEntityList(List<CropDTO> cropDTOList) {
-            return modelMapper.map(cropDTOList,new TypeToken<List<CropEntity>>() {}.getType());
+
+    public CropDTO toCropDTO(CropEntity cropEntity) {
+        return modelMapper.map(cropEntity, CropDTO.class);
+    }
+
+    public List<CropDTO> toCropDTOList(List<CropEntity> cropEntitiesList) {
+        return modelMapper.map(cropEntitiesList,new TypeToken<List<CropDTO>>() {}.getType());
+    }
+
+    public List<CropEntity> toCropEntityList(List<CropDTO> cropDTOList) {
+        return modelMapper.map(cropDTOList,new TypeToken<List<CropEntity>>() {}.getType());
+    }
+    //for equipment mapping
+    public EquipmentEntity toEquipmentEntity(EquipmentDTO equipmentDTO) {
+        return modelMapper.map(equipmentDTO, EquipmentEntity.class);
+    }
+    public EquipmentDTO toEquipmentDTO(EquipmentEntity equipmentEntity) {
+        return modelMapper.map(equipmentEntity, EquipmentDTO.class);
+    }
+
+    public List<EquipmentDTO> toEquipmentDTOList(List<EquipmentEntity> equipmentEntitiesList) {
+        return modelMapper.map(equipmentEntitiesList,new TypeToken<List<EquipmentDTO>>() {}.getType());
     }
 
     //for field mapping
@@ -41,6 +58,19 @@ public class Mapping {
     }
     public List<FieldEntity> toFieldEntityList(List<FieldDTO> fieldDTOList) {
         return modelMapper.map(fieldDTOList,new TypeToken<List<FieldEntity>>() {}.getType());
+    }
+
+    //for log mapping
+    public MonitoringLogEntity toMonitoringLogEntity(MonitoringLogDTO monitoringLogDTO) {
+        return modelMapper.map(monitoringLogDTO, MonitoringLogEntity.class);
+    }
+
+    public MonitoringLogDTO toMonitoringLogDTO(MonitoringLogEntity logEntity) {
+        return modelMapper.map(logEntity, MonitoringLogDTO.class);
+    }
+
+    public List<MonitoringLogDTO> toMonitoringLogDTOList(List<MonitoringLogEntity> logEntitiesList) {
+        return modelMapper.map(logEntitiesList,new TypeToken<List<MonitoringLogDTO>>() {}.getType());
     }
 
     //for staff mapping
@@ -60,6 +90,19 @@ public class Mapping {
         return modelMapper.map(staffDTOList,new TypeToken<List<StaffEntity>>() {}.getType());
     }
 
+    //for user mapping
+    public UserEntity toUserEntity(UserDTO userDTO) {
+        return modelMapper.map(userDTO, UserEntity.class);
+    }
+
+    public UserDTO toUserDTO(UserEntity userEntity) {
+        return modelMapper.map(userEntity, UserDTO.class);
+    }
+
+    public List<UserDTO> toUserDTOList(List<UserEntity> userEntitiesList) {
+        return modelMapper.map(userEntitiesList,new TypeToken<List<UserDTO>>() {}.getType());
+    }
+
     //for vehicle mapping
     public VehicleEntity toVehicleEntity(VehicleDTO vehicleDTO) {
         return modelMapper.map(vehicleDTO, VehicleEntity.class);
@@ -76,44 +119,4 @@ public class Mapping {
     public List<VehicleEntity> toVehicleEntityList(List<VehicleDTO> vehicleDTOList){
         return modelMapper.map(vehicleDTOList,new TypeToken<List<VehicleEntity>>() {}.getType());
     }
-
-    //for equipment mapping
-    public EquipmentEntity toEquipmentEntity(EquipmentDTO equipmentDTO) {
-        return modelMapper.map(equipmentDTO, EquipmentEntity.class);
-    }
-    public EquipmentDTO toEquipmentDTO(EquipmentEntity equipmentEntity) {
-        return modelMapper.map(equipmentEntity, EquipmentDTO.class);
-    }
-
-    public List<EquipmentDTO> toEquipmentDTOList(List<EquipmentEntity> equipmentEntitiesList) {
-        return modelMapper.map(equipmentEntitiesList,new TypeToken<List<EquipmentDTO>>() {}.getType());
-    }
-
-    //for log mapping
-    public MonitoringLogEntity toMonitoringLogEntity(MonitoringLogDTO monitoringLogDTO) {
-        return modelMapper.map(monitoringLogDTO, MonitoringLogEntity.class);
-    }
-
-    public MonitoringLogDTO toMonitoringLogDTO(MonitoringLogEntity logEntity) {
-        return modelMapper.map(logEntity, MonitoringLogDTO.class);
-    }
-
-    public List<MonitoringLogDTO> toMonitoringLogDTOList(List<MonitoringLogEntity> logEntitiesList) {
-        return modelMapper.map(logEntitiesList,new TypeToken<List<MonitoringLogDTO>>() {}.getType());
-    }
-
-    //for user mapping
-    public UserEntity toUserEntity(UserDTO userDTO) {
-        return modelMapper.map(userDTO, UserEntity.class);
-    }
-
-    public UserDTO toUserDTO(UserEntity userEntity) {
-        return modelMapper.map(userEntity, UserDTO.class);
-    }
-
-    public List<UserDTO> toUserDTOList(List<UserEntity> userEntitiesList) {
-        return modelMapper.map(userEntitiesList,new TypeToken<List<UserDTO>>() {}.getType());
-    }
-
-
 }
