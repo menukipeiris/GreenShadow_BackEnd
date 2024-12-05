@@ -3,8 +3,12 @@ package lk.ijse.aad.greenShadow.service.impl;
 import jakarta.transaction.Transactional;
 import lk.ijse.aad.greenShadow.customStatusCode.SelectedErrorStatus;
 import lk.ijse.aad.greenShadow.dao.EquipmentDAO;
+import lk.ijse.aad.greenShadow.dao.FieldDAO;
+import lk.ijse.aad.greenShadow.dao.StaffDAO;
 import lk.ijse.aad.greenShadow.dto.EquipmentStatus;
 import lk.ijse.aad.greenShadow.dto.impl.EquipmentDTO;
+import lk.ijse.aad.greenShadow.dto.impl.FieldDTO;
+import lk.ijse.aad.greenShadow.dto.impl.StaffDTO;
 import lk.ijse.aad.greenShadow.entity.impl.EquipmentEntity;
 import lk.ijse.aad.greenShadow.entity.impl.FieldEntity;
 import lk.ijse.aad.greenShadow.entity.impl.StaffEntity;
@@ -18,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -26,6 +31,10 @@ public class EquipmentServiceIMPL implements EquipmentService {
     private EquipmentDAO equipmentDao;
     @Autowired
     private Mapping mapping;
+    @Autowired
+    private StaffDAO staffDao;
+    @Autowired
+    private FieldDAO fieldDao;
 
     @Override
     public void saveEquipment(EquipmentDTO equipmentDTO) {
@@ -38,8 +47,25 @@ public class EquipmentServiceIMPL implements EquipmentService {
 
     @Override
     public List<EquipmentDTO> getAllEquipment() {
-        return mapping.toEquipmentDTOList(equipmentDao.findAll());
-    }
+        List<EquipmentEntity> equipments = equipmentDao.findAll();
+        return equipments.stream()
+                .map(equipment -> {
+                    EquipmentDTO equipmentDTO = new EquipmentDTO();
+                    equipmentDTO.setName(equipment.getName());
+                    equipmentDTO.setType(equipment.getType());
+                    equipmentDTO.setStatus(equipment.getStatus());
+                    Optional<StaffEntity> assignedStaff = staffDao.findById(equipment.getAssignedStaff().getStaffId());
+                    StaffDTO assignedStaffDTO = assignedStaff.isPresent() ?
+                            mapping.toStaffDTO(assignedStaff.get()) : null;
+                    Optional<FieldEntity> assignedField = fieldDao.
+                            findById(equipment.getAssignedField().getFieldCode());
+                    FieldDTO assignedFieldDTO = assignedField.isPresent() ?
+                            mapping.toFieldDTO(assignedField.get()) : null;
+                    equipmentDTO.setAssignedStaff(assignedStaffDTO);
+                    equipmentDTO.setAssignedField(assignedFieldDTO);
+                    return equipmentDTO;
+                })
+                .collect(Collectors.toList());    }
 
     @Override
     public EquipmentStatus getEquipment(String equipmentId) {
@@ -54,7 +80,7 @@ public class EquipmentServiceIMPL implements EquipmentService {
     @Override
     public void deleteEquipment(String equipmentId) {
         Optional<EquipmentEntity> foundEquipment = equipmentDao.findById(equipmentId);
-        if(foundEquipment.isPresent()) {
+        if(!foundEquipment.isPresent()) {
             throw new EquipmentNotFoundException("Equipment not found");
         }else{
             equipmentDao.deleteById(equipmentId);

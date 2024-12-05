@@ -3,10 +3,14 @@ package lk.ijse.aad.greenShadow.controller;
 import lk.ijse.aad.greenShadow.customStatusCode.SelectedErrorStatus;
 import lk.ijse.aad.greenShadow.dto.EquipmentStatus;
 import lk.ijse.aad.greenShadow.dto.impl.EquipmentDTO;
+import lk.ijse.aad.greenShadow.dto.impl.FieldDTO;
+import lk.ijse.aad.greenShadow.dto.impl.StaffDTO;
 import lk.ijse.aad.greenShadow.entity.impl.EquipmentEntity;
 import lk.ijse.aad.greenShadow.exception.DataPersistException;
 import lk.ijse.aad.greenShadow.exception.EquipmentNotFoundException;
 import lk.ijse.aad.greenShadow.service.EquipmentService;
+import lk.ijse.aad.greenShadow.service.FieldService;
+import lk.ijse.aad.greenShadow.service.StaffService;
 import lk.ijse.aad.greenShadow.util.RegexProcess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,11 +27,19 @@ import java.util.Optional;
 public class EquipmentController {
     @Autowired
     private EquipmentService equipmentService;
+    @Autowired
+    private StaffService staffService;
+    @Autowired
+    private FieldService fieldService;
 
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> saveEquipment(@RequestBody EquipmentDTO equipmentDTO) {
         try {
+            StaffDTO staff = staffService.getStaffByName(equipmentDTO.getAssignedStaff().getFirstName());
+            FieldDTO field = fieldService.getFieldByName(equipmentDTO.getAssignedField().getFieldName());
+            equipmentDTO.setAssignedStaff(staff);
+            equipmentDTO.setAssignedField(field);
             equipmentService.saveEquipment(equipmentDTO);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (DataPersistException e) {
@@ -65,7 +77,8 @@ public class EquipmentController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PutMapping(value = "/{equipmentId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PatchMapping(value = "/{equipmentId}")
     public ResponseEntity<Void> updateEquipment(@PathVariable ("equipmentId") String equipmentId,
                                                 @RequestBody EquipmentDTO equipmentDTO) {
 
@@ -73,6 +86,10 @@ public class EquipmentController {
             if(!RegexProcess.equipIdMatcher(equipmentId) || equipmentDTO == null) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
+            StaffDTO staff = staffService.getStaffByName(equipmentDTO.getAssignedStaff().getFirstName());
+            FieldDTO field = fieldService.getFieldByName(equipmentDTO.getAssignedField().getFieldName());
+            equipmentDTO.setAssignedStaff(staff);
+            equipmentDTO.setAssignedField(field);
             equipmentService.updateEquipment(equipmentId, equipmentDTO);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }catch (EquipmentNotFoundException e){
