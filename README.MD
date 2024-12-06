@@ -57,7 +57,8 @@ POST /api/v1/auth/refresh: Refresh the token.
 
 POST /api/v1/auth/logout: Blacklist a token.
 
-Crop Management
+#### Crop Management
+
 GET /api/v1/crop: Get all crops.
 
 POST /api/v1/crop: Add a new crop.
@@ -66,7 +67,8 @@ PUT /api/v1/crop/{id}: Update a crop.
 
 DELETE /api/v1/crop/{id}: Delete a crop.
 
-Field Management
+#### Field Management
+
 GET /api/v1/field: Get all fields.
 
 POST /api/v1/field: Add a new field.
@@ -75,7 +77,8 @@ PUT /api/v1/field/{id}: Update a field.
 
 DELETE /api/v1/field/{id}: Delete a field.
 
-Equipment Management
+#### Equipment Management
+
 GET /api/v1/equipment: Get all equipment.
 
 POST /api/v1/equipment: Add new equipment.
@@ -84,7 +87,8 @@ PUT /api/v1/equipment/{id}: Update equipment details.
 
 DELETE /api/v1/equipment/{id}: Delete equipment.
 
-Monitoring Logs
+#### Monitoring Logs
+
 GET /api/v1/monitoring-log: Get all monitoring logs.
 
 POST /api/v1/monitoring-log: Create a monitoring log.
@@ -93,7 +97,8 @@ PUT /api/v1/monitoring-log/{id}: Update a monitoring log.
 
 DELETE /api/v1/monitoring-log/{id}: Delete a monitoring log.
 
-Vehicle Management
+#### Vehicle Management
+
 GET /api/v1/vehicle: Get all vehicles.
 
 POST /api/v1/vehicle: Add a new vehicle.
@@ -102,7 +107,8 @@ PUT /api/v1/vehicle/{id}: Update vehicle details.
 
 DELETE /api/v1/vehicle/{id}: Delete a vehicle.
 
-Staff Management
+#### Staff Management
+
 GET /api/v1/staff: Get all staff members.
 
 POST /api/v1/staff: Add a new staff member.
