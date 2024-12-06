@@ -5,15 +5,24 @@
 The Green Shadow Crop Monitoring System is a comprehensive web-based application for managing and monitoring agricultural operations. The system supports features like crop management, field tracking, equipment and vehicle allocation, staff assignments, and monitoring logs, all with robust security and role-based access control.
 
 ### Features
-User Management: Role-based access control (MANAGER, ADMINISTRATIVE, SCIENTIST).
-Field Management: Manage fields with geolocation and images.
-Crop Management: Add, update, and view crop details including scientific and common names, categories, and seasons.
-Staff Management: Assign staff to fields, vehicles, and equipment.
-Equipment and Vehicle Management: Manage and allocate resources to staff and fields.
-Monitoring Logs: Record and retrieve monitoring activities.
-JWT Authentication: Token-based authentication for secure access.
-CORS Enabled: Supports secure communication with front-end applications.
-Blacklist Tokens: Securely log out users by invalidating tokens.
+
+##### User Management: Role-based access control (MANAGER, ADMINISTRATIVE, SCIENTIST).
+
+##### Field Management: Manage fields with geolocation and images.
+
+##### Crop Management: Add, update, and view crop details including scientific and common names, categories, and seasons.
+
+##### Staff Management: Assign staff to fields, vehicles, and equipment.
+
+##### Equipment and Vehicle Management: Manage and allocate resources to staff and fields.
+
+##### Monitoring Logs: Record and retrieve monitoring activities.
+
+##### JWT Authentication: Token-based authentication for secure access.
+
+##### CORS Enabled: Supports secure communication with front-end applications.
+
+##### Blacklist Tokens: Securely log out users by invalidating tokens.
 
 ### Technologies Used
 
@@ -47,7 +56,7 @@ Node.js (optional for front-end builds)
 ### Steps
 
 Clone the repository:
-git clone https://github.com/your-repo/green-shadow-crop-monitoring.git
+git clone https://github.com/menukipeiris/GreenShadow_BackEnd
 cd green-shadow-crop-monitoring
 API Endpoints
 Authentication
