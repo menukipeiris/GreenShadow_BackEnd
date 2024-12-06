@@ -28,30 +28,49 @@ The Green Shadow Crop Monitoring System is a comprehensive web-based application
 
 #### Backend
 
-Java 17
-Spring Boot
-Spring Security
-Spring Data JPA
-Spring Web
-MySQL: Database
-JJWT: JSON Web Token for authentication
-Lombok: Reduce boilerplate code
-Maven: Build tool
+##### Java 17
+
+##### Spring Boot
+
+##### Spring Security
+
+##### Spring Data JPA
+
+##### Spring Web
+
+##### MySQL: Database
+
+##### JJWT: JSON Web Token for authentication
+
+##### Lombok: Reduce boilerplate code
+
+##### Maven: Build tool
 
 #### Frontend
 
-HTML, CSS, JavaScript (Vanilla JS/jQuery)
-Tools
-Postman: API testing
-Git: Version control
-IntelliJ IDEA: IDE
-MySQL Workbench: Database management
-Setup and Installation
+##### HTML, CSS, JavaScript (Vanilla JS/jQuery)
+
+#### Tools
+
+##### Postman: API testing
+
+##### Git: Version control
+
+##### IntelliJ IDEA: IDE
+
+##### MySQL Workbench: Database management
+
+##### Setup and Installation
+
 Prerequisites
-Java 17+
-Maven
-MySQL
-Node.js (optional for front-end builds)
+
+##### Java 17+
+
+##### Maven
+
+##### MySQL
+
+##### Node.js (optional for front-end builds)
 
 ### Steps
 
@@ -68,63 +87,63 @@ POST /api/v1/auth/logout: Blacklist a token.
 
 #### Crop Management
 
-GET /api/v1/crop: Get all crops.
+### GET /api/v1/crop: Get all crops.
 
-POST /api/v1/crop: Add a new crop.
+### POST /api/v1/crop: Add a new crop.
 
-PUT /api/v1/crop/{id}: Update a crop.
+### PUT /api/v1/crop/{id}: Update a crop.
 
-DELETE /api/v1/crop/{id}: Delete a crop.
+### DELETE /api/v1/crop/{id}: Delete a crop.
 
 #### Field Management
 
-GET /api/v1/field: Get all fields.
+### GET /api/v1/field: Get all fields.
 
-POST /api/v1/field: Add a new field.
+### POST /api/v1/field: Add a new field.
 
-PUT /api/v1/field/{id}: Update a field.
+### PUT /api/v1/field/{id}: Update a field.
 
-DELETE /api/v1/field/{id}: Delete a field.
+### DELETE /api/v1/field/{id}: Delete a field.
 
 #### Equipment Management
 
-GET /api/v1/equipment: Get all equipment.
+### GET /api/v1/equipment: Get all equipment.
 
-POST /api/v1/equipment: Add new equipment.
+### POST /api/v1/equipment: Add new equipment.
 
-PUT /api/v1/equipment/{id}: Update equipment details.
+### PUT /api/v1/equipment/{id}: Update equipment details.
 
-DELETE /api/v1/equipment/{id}: Delete equipment.
+### DELETE /api/v1/equipment/{id}: Delete equipment.
 
 #### Monitoring Logs
 
-GET /api/v1/monitoring-log: Get all monitoring logs.
+### GET /api/v1/monitoring-log: Get all monitoring logs.
 
-POST /api/v1/monitoring-log: Create a monitoring log.
+### POST /api/v1/monitoring-log: Create a monitoring log.
 
-PUT /api/v1/monitoring-log/{id}: Update a monitoring log.
+### PUT /api/v1/monitoring-log/{id}: Update a monitoring log.
 
-DELETE /api/v1/monitoring-log/{id}: Delete a monitoring log.
+### DELETE /api/v1/monitoring-log/{id}: Delete a monitoring log.
 
 #### Vehicle Management
 
-GET /api/v1/vehicle: Get all vehicles.
+### GET /api/v1/vehicle: Get all vehicles.
 
-POST /api/v1/vehicle: Add a new vehicle.
+### POST /api/v1/vehicle: Add a new vehicle.
 
-PUT /api/v1/vehicle/{id}: Update vehicle details.
+### PUT /api/v1/vehicle/{id}: Update vehicle details.
 
-DELETE /api/v1/vehicle/{id}: Delete a vehicle.
+### DELETE /api/v1/vehicle/{id}: Delete a vehicle.
 
 #### Staff Management
 
-GET /api/v1/staff: Get all staff members.
+### GET /api/v1/staff: Get all staff members.
 
-POST /api/v1/staff: Add a new staff member.
+### POST /api/v1/staff: Add a new staff member.
 
-PUT /api/v1/staff/{id}: Update staff details.
+### PUT /api/v1/staff/{id}: Update staff details.
 
-DELETE /api/v1/staff/{id}: Delete a staff member.
+### DELETE /api/v1/staff/{id}: Delete a staff member.
 
 ### License
 
